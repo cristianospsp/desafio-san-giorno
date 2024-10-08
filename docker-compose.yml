@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: san-giorno
+    environment:
+      POSTGRES_DB: san-giorno
+      POSTGRES_USER: san-giorno
+      POSTGRES_PASSWORD: san-giorno
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - san-giorno-network
+
+networks:
+  san-giorno-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
