@@ -2,7 +2,7 @@
 
 Para subir a infra da aplicaçãozinha, é necessario ter instalado:
 
-<li>docker</li>
+<li>"docker"</li>
 <li>docker-compose</li>
 <li>java 17</li>
 <li>maven</li>
