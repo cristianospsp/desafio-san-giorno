@@ -1,9 +1,8 @@
 version: '3.8'
 
 services:
-  postgres:
+  db:
     image: postgres:latest
-    container_name: san-giorno
     environment:
       POSTGRES_DB: san-giorno
       POSTGRES_USER: san-giorno
@@ -11,7 +10,18 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - san-giorno-network
+
+  rabbitmq:
+    image: rabbitmq:management
+    environment:
+      RABBITMQ_DEFAULT_USER: san-giorno
+      RABBITMQ_DEFAULT_PASS: san-giorno
+    ports:
+      - "5672:5672"
+      - "15672:15672"
     networks:
       - san-giorno-network
 
@@ -20,5 +30,4 @@ networks:
     driver: bridge
 
 volumes:
-  postgres_data:
-    driver: local
+  pgdata:
