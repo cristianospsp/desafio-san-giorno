@@ -2,15 +2,16 @@ version: '3.8'
 
 services:
   db:
-    image: postgres:latest
+    image: mysql:8.0
     environment:
-      POSTGRES_DB: san-giorno
-      POSTGRES_USER: san-giorno
-      POSTGRES_PASSWORD: san-giorno
+      MYSQL_DATABASE: san_giorno
+      MYSQL_USER: san_giorno
+      MYSQL_PASSWORD: san_giorno
+      MYSQL_ROOT_PASSWORD: san_giorno
     ports:
-      - "5432:5432"
+      - "3306:3306"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - mysqldata:/var/lib/mysql
     networks:
       - san-giorno-network
 
@@ -30,4 +31,4 @@ networks:
     driver: bridge
 
 volumes:
-  pgdata:
+  mysqldata:
