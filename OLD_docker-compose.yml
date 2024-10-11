@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: san-giorno
+      POSTGRES_USER: san-giorno
+      POSTGRES_PASSWORD: san-giorno
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - san-giorno-network
+
+  rabbitmq:
+    image: rabbitmq:management
+    environment:
+      RABBITMQ_DEFAULT_USER: san-giorno
+      RABBITMQ_DEFAULT_PASS: san-giorno
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - san-giorno-network
+
+networks:
+  san-giorno-network:
+    driver: bridge
+
+volumes:
+  pgdata:
