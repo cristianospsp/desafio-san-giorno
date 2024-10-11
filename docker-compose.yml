@@ -1,17 +1,26 @@
 version: '3.8'
-
 services:
-  db:
+  mysql:
     image: mysql:8.0
     environment:
+      MYSQL_ROOT_PASSWORD: san-giorno
       MYSQL_DATABASE: san_giorno
-      MYSQL_USER: san_giorno
-      MYSQL_PASSWORD: san_giorno
-      MYSQL_ROOT_PASSWORD: san_giorno
+      MYSQL_USER: san-giorno
+      MYSQL_PASSWORD: san-giorno
     ports:
       - "3306:3306"
+    networks:
+      - san-giorno-network
     volumes:
       - mysqldata:/var/lib/mysql
+  app:
+    image: san-giorno-app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/san_giorno
+      SPRING_DATASOURCE_USERNAME: san-giorno
+      SPRING_DATASOURCE_PASSWORD: san-giorno
+    depends_on:
+      - mysql
     networks:
       - san-giorno-network
 
