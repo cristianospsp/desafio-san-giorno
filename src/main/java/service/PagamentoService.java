@@ -1,66 +1,69 @@
 package service;
 
 import dto.PagamentoDto;
-import dto.PagamentoRequest;
-import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
+import repository.PagamentoRepository;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.math.BigDecimal;
 
 @Service
 public class PagamentoService {
 
-    private final Logger logger = LoggerFactory.getLogger(PagamentoService.class);
+    private final PagamentoRepository pagamentoRepository;
+    private final RabbitTemplate rabbitTemplate;
 
-    private final AmqpTemplate amqpTemplate;
-
-    public PagamentoService(AmqpTemplate amqpTemplate) {
-        this.amqpTemplate = amqpTemplate;
+    public PagamentoService(PagamentoRepository pagamentoRepository, RabbitTemplate rabbitTemplate) {
+        this.pagamentoRepository = pagamentoRepository;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
-    public String processarPagamento(PagamentoRequest request) {
-        // Validações (omitidas para foco na parte do RabbitMQ)
-
-        for (PagamentoDto pagamento : request.getPagamentos()) {
-            String status = validarPagamento(pagamento);
-            enviarParaFila(status, pagamento);
-        }
-
+    public String processarPagamentos(Iterable<PagamentoDto> pagamentos) {
+        pagamentos.forEach(this::processarPagamento);
         return "Pagamentos processados com sucesso";
     }
 
+    private void processarPagamento(PagamentoDto pagamento) {
+        if (!pagamentoRepository.existsByCodigoCobranca(pagamento.getCodigoCobranca())) {
+            throw new IllegalArgumentException("Código de cobrança não encontrado: " + pagamento.getCodigoCobranca());
+        }
+
+        String status = validarPagamento(pagamento);
+        enviarParaFila(status, pagamento);
+    }
+
+    private String validarPagamento(PagamentoDto pagamento) {
+        BigDecimal valorPago = pagamento.getValorPago();
+        BigDecimal valorOriginal = pagamento.getValorOriginal();
+
+        if (valorPago.compareTo(valorOriginal) < 0) {
+            return "PAGAMENTO_PARCIAL";
+        } else if (valorPago == valorOriginal) {
+            return "PAGAMENTO_TOTAL";
+        } else {
+            return "PAGAMENTO_EXCEDENTE";
+        }
+    }
+
     private void enviarParaFila(String status, PagamentoDto pagamento) {
-        String routingKey;
+        String fila;
+
         switch (status) {
             case "parcial":
-                routingKey = "pagamento_parcial";
-                logger.info("Mensagem enviada para a fila: " + routingKey + " com status: " + status);
+                fila = RabbitMQConfig.FILA_PARCIAL;
                 break;
             case "total":
-                routingKey = "pagamento_total";
-                logger.info("Mensagem enviada para a fila: " + routingKey + " com status: " + status);
+                fila = RabbitMQConfig.FILA_TOTAL;
                 break;
             case "excedente":
-                routingKey = "pagamento_excedente";
-                logger.info("Mensagem enviada para a fila: " + routingKey + " com status: " + status);
+                fila = RabbitMQConfig.FILA_EXCEDENTE;
                 break;
             default:
                 throw new IllegalArgumentException("Status de pagamento inválido: " + status);
         }
 
-        amqpTemplate.convertAndSend(routingKey, pagamento);
-    }
-
-    private String validarPagamento(PagamentoDto pagamento) {
-        double valorOriginal = 100.00; // Mock de valor original
-
-        if (pagamento.getValor() < valorOriginal) {
-            return "parcial";
-        } else if (pagamento.getValor().equals(valorOriginal)) {
-            return "total";
-        } else {
-            return "excedente";
-        }
+        rabbitTemplate.convertAndSend(fila, pagamento);
+        System.out.printf("Enviando pagamento %s para a fila %s com status: %s%n",
+                pagamento.getCodigoCobranca(), fila, status);
     }
 }
