@@ -1,30 +1,27 @@
 package controller;
 
-import dto.PagamentoRequest;
+import dto.PagamentoDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import service.PagamentoService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
-import javax.validation.Valid;
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/pagamentos")
+@RequestMapping("/pagamentos")
 public class PagamentoController {
 
     private final PagamentoService pagamentoService;
 
+    @Autowired
     public PagamentoController(PagamentoService pagamentoService) {
         this.pagamentoService = pagamentoService;
     }
 
     @PostMapping
-    public ResponseEntity<?> processarPagamento(@Valid @RequestBody PagamentoRequest pagamentoRequest) {
-        try {
-            var response = pagamentoService.processarPagamento(pagamentoRequest);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(400).body(e.getMessage());
-        }
+    public String processarPagamentos(@RequestBody List<PagamentoDto> pagamentos) {
+        return pagamentoService.processarPagamentos(pagamentos);
     }
 }
+
+
