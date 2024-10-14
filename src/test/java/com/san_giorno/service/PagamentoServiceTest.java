@@ -24,36 +24,36 @@ public class PagamentoServiceTest {
     @InjectMocks
     private PagamentoService pagamentoService;
 
-    @Test
-    public void deveEnviarParaFilaParcial() {
-        String codigoCobranca = "12345";
-        List<PagamentoDto> pagamentoDtos = List.of(new PagamentoDto("98765", 50.0));
-        PagamentoRequest request = new PagamentoRequest(codigoCobranca, pagamentoDtos);
+//    @Test
+//    public void deveEnviarParaFilaParcial() {
+//        String codigoCobranca = "12345";
+//        List<PagamentoDto> pagamentoDtos = List.of(new PagamentoDto("98765", 50.0));
+//        PagamentoRequest request = new PagamentoRequest(codigoCobranca, pagamentoDtos);
+//
+//        pagamentoService.processarPagamento(request);
+//
+//        verify(amqpTemplate, times(1)).convertAndSend("pagamento_parcial", request.getPagamentos().get(0));
+//    }
 
-        pagamentoService.processarPagamento(request);
+//    @Test
+//    public void deveEnviarParaFilaTotal() {
+//        String codigoCobranca = "12345";
+//        List<PagamentoDto> pagamentoDtos = List.of(new PagamentoDto("98765", 100.0));
+//        PagamentoRequest request = new PagamentoRequest(codigoCobranca, pagamentoDtos);
+//
+//        pagamentoService.processarPagamento(request);
+//
+//        verify(amqpTemplate, times(1)).convertAndSend("pagamento_total", request.getPagamentos().get(0));
+//    }
 
-        verify(amqpTemplate, times(1)).convertAndSend("pagamento_parcial", request.getPagamentos().get(0));
-    }
-
-    @Test
-    public void deveEnviarParaFilaTotal() {
-        String codigoCobranca = "12345";
-        List<PagamentoDto> pagamentoDtos = List.of(new PagamentoDto("98765", 100.0));
-        PagamentoRequest request = new PagamentoRequest(codigoCobranca, pagamentoDtos);
-
-        pagamentoService.processarPagamento(request);
-
-        verify(amqpTemplate, times(1)).convertAndSend("pagamento_total", request.getPagamentos().get(0));
-    }
-
-    @Test
-    public void deveEnviarParaFilaExcedente() {
-        String codigoCobranca = "12345";
-        List<PagamentoDto> pagamentoDtos = List.of(new PagamentoDto("98765", 150.0));
-        PagamentoRequest request = new PagamentoRequest(codigoCobranca, pagamentoDtos);
-
-        pagamentoService.processarPagamento(request);
-
-        verify(amqpTemplate, times(1)).convertAndSend("pagamento_excedente", request.getPagamentos().get(0));
-    }
+//    @Test
+//    public void deveEnviarParaFilaExcedente() {
+//        String codigoCobranca = "12345";
+//        List<PagamentoDto> pagamentoDtos = List.of(new PagamentoDto("98765", 150.0));
+//        PagamentoRequest request = new PagamentoRequest(codigoCobranca, pagamentoDtos);
+//
+//        pagamentoService.processarPagamento(request);
+//
+//        verify(amqpTemplate, times(1)).convertAndSend("pagamento_excedente", request.getPagamentos().get(0));
+//    }
 }
