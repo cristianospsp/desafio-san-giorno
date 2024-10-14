@@ -1,32 +1,52 @@
 package dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import java.math.BigDecimal;
 
-import javax.validation.constraints.NotNull;
-
-@Schema(description = "Informações de cada pagamento")
 public class PagamentoDto {
 
-    @Schema(description = "Código da cobrança", example = "98765", required = true)
-    @NotNull
     private String codigoCobranca;
+    private BigDecimal valorPago;
+    private BigDecimal valorOriginal;
 
-    @Schema(description = "Valor do pagamento", example = "150.00", required = true)
-    @NotNull
-    private Double valor;
-
-    public PagamentoDto(String codigoCobranca, Double valor) {
-        this.codigoCobranca = codigoCobranca;
-        this.valor = valor;
+    public PagamentoDto() {
     }
 
-    public @NotNull String getCodigoCobranca() {
+    public PagamentoDto(String codigoCobranca, BigDecimal valorPago, BigDecimal valorOriginal) {
+        this.codigoCobranca = codigoCobranca;
+        this.valorPago = valorPago;
+        this.valorOriginal = valorOriginal;
+    }
+
+    public String getCodigoCobranca() {
         return codigoCobranca;
     }
 
-    public @NotNull Double getValor() {
-        return valor;
+    public void setCodigoCobranca(String codigoCobranca) {
+        this.codigoCobranca = codigoCobranca;
     }
 
-    // Getters e setters
+    public BigDecimal getValorPago() {
+        return valorPago;
+    }
+
+    public void setValorPago(BigDecimal valorPago) {
+        this.valorPago = valorPago;
+    }
+
+    public BigDecimal getValorOriginal() {
+        return valorOriginal;
+    }
+
+    public void setValorOriginal(BigDecimal valorOriginal) {
+        this.valorOriginal = valorOriginal;
+    }
+
+    @Override
+    public String toString() {
+        return "PagamentoDto{" +
+                "codigoCobranca='" + codigoCobranca + '\'' +
+                ", valorPago=" + valorPago +
+                ", valorOriginal=" + valorOriginal +
+                '}';
+    }
 }
