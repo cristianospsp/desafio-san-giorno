@@ -8,31 +8,43 @@ import java.util.List;
 @Schema(description = "Requisição de pagamento contendo o código do vendedor e lista de pagamentos.")
 public class PagamentoRequest {
 
-    @Schema(description = "Código do vendedor", example = "12345", required = true)
-    @NotNull
-    private String codigoVendedor;
+//    @Schema(description = "Código do vendedor", example = "12345", required = true)
+//    @NotNull
+//    private String codigoVendedor;
+//
+//    @Schema(description = "Lista de pagamentos", required = true)
+//    @NotNull
+//    private List<PagamentoDto> pagamentos;
 
-    @Schema(description = "Lista de pagamentos", required = true)
-    @NotNull
-    private List<PagamentoDto> pagamentos;
+    private List<PagamentoItem> pagamentos;
 
-    // Getters e setters
-
-
-    public PagamentoRequest(String codigoVendedor) {
-        this.codigoVendedor = codigoVendedor;
+    public List<PagamentoItem> getPagamentos() {
+        return pagamentos;
     }
 
-    public PagamentoRequest(String codigoVendedor, List<PagamentoDto> pagamentos) {
-        this.codigoVendedor = codigoVendedor;
+    public void setPagamentos(List<PagamentoItem> pagamentos) {
         this.pagamentos = pagamentos;
     }
 
-    public @NotNull String getCodigoVendedor() {
-        return codigoVendedor;
-    }
+    public static class PagamentoItem {
+        private String codigoCobranca;
+        private double valorPago;
 
-    public @NotNull List<PagamentoDto> getPagamentos() {
-        return pagamentos;
+        // Getters e Setters
+        public String getCodigoCobranca() {
+            return codigoCobranca;
+        }
+
+        public void setCodigoCobranca(String codigoCobranca) {
+            this.codigoCobranca = codigoCobranca;
+        }
+
+        public double getValorPago() {
+            return valorPago;
+        }
+
+        public void setValorPago(double valorPago) {
+            this.valorPago = valorPago;
+        }
     }
 }
